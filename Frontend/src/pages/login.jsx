@@ -1,3 +1,4 @@
+import axios from "../Axios/Axios";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 
 function Login() {
   const [signupInput, setSignupInput] = useState({
@@ -32,21 +32,26 @@ function Login() {
     }
   };
 
-  const formHandler = (type) => {
-    if (type === "signup") {
-      console.log(signupInput);
-      setSignupInput({
-        name: "",
-        email: "",
-        password: "",
-      })
-
-    } else if (type === "login") {
-      console.log(loginInput);
-      setLoginInput({
-        email: "",
-        password: "",
-      })
+  const formHandler = async (type) => {
+    try {
+      if (type === "signup") {
+        const response = await axios.post("/v1/user/register", signupInput);
+        console.log("Signup Response:", response.data);
+        setSignupInput({
+          name: "",
+          email: "",
+          password: "",
+        });
+      } else if (type === "login") {
+        const response = await axios.post("/v1/user/login", loginInput);
+        console.log("Login Response:", response.data);
+        setLoginInput({
+          email: "",
+          password: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
     }
   };
 
@@ -103,7 +108,7 @@ function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick ={(e)=>formHandler("signup")} >Signup</Button>
+              <Button onClick={() => formHandler("signup")}>Signup</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -129,7 +134,7 @@ function Login() {
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="password"> password</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -142,7 +147,7 @@ function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button  onClick ={(e)=>formHandler("login")} >Login</Button>
+              <Button onClick={() => formHandler("login")}>Login</Button>
             </CardFooter>
           </Card>
         </TabsContent>

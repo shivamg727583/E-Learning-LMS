@@ -11,7 +11,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "@/feature/api/authApi";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function Login() {
   const [signupInput, setSignupInput] = useState({
@@ -24,6 +30,44 @@ function Login() {
     password: "",
   });
 
+  const [
+    registerUser,
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerIsloading,
+      isSuccess: registerIsSuccess,
+    },
+  ] = useRegisterUserMutation();
+  const [
+    loginUser,
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsloading,
+      isSuccess: loginIsSuccess,
+    },
+  ] = useLoginUserMutation();
+
+
+  useEffect(()=>{
+    if(registerIsSuccess && registerData){
+      toast.success(registerData.message || "Signup successful")
+    }
+    if(loginIsSuccess && loginData){
+      toast.success(loginData.message || "Login successful")
+      }
+      if(registerError){
+        toast.error(registerError.data.message || "Login Failed")
+        }
+        if(loginError){
+         
+          toast.error(loginError.data.message || "Login Failed")
+          }
+
+      },[registerIsSuccess,loginIsSuccess,registerData,loginData,loginError,registerError])
+  
+
   const inputHandler = (e, type) => {
     if (type === "signup") {
       setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
@@ -35,23 +79,23 @@ function Login() {
   const formHandler = async (type) => {
     try {
       if (type === "signup") {
-        const response = await axios.post("/v1/user/register", signupInput);
-        console.log("Signup Response:", response.data);
+       await registerUser(signupInput);
+       console.log(signupInput)
+       console.log('signup done ')
         setSignupInput({
           name: "",
           email: "",
           password: "",
         });
       } else if (type === "login") {
-        const response = await axios.post("/v1/user/login", loginInput);
-        console.log("Login Response:", response.data);
+       await loginUser(loginInput)
         setLoginInput({
           email: "",
           password: "",
         });
       }
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
+      console.error("Error:",error);
     }
   };
 
@@ -108,7 +152,15 @@ function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => formHandler("signup")}>Signup</Button>
+              <Button disable={registerIsloading.toString()} onClick={() => formHandler("signup")}>
+              {
+                  registerIsloading?(
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please Wait
+                    </>
+                  ) : "Signup"
+                }
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -147,7 +199,16 @@ function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => formHandler("login")}>Login</Button>
+              <Button disable={loginIsloading.toString()} onClick={() => formHandler("login")}>
+                {
+                  loginIsloading?(
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"/>Please Wait
+                    </>
+                  ) : "Login"
+                }
+                
+                </Button>
             </CardFooter>
           </Card>
         </TabsContent>

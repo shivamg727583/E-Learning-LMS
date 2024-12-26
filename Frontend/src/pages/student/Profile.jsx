@@ -13,9 +13,10 @@ import { toast } from 'sonner';
 function Profile() {
   const [name, setName] = useState('');
   const [profileUri, setProfileUri] = useState('');
+  const [isDialogOpen, setDialogOpen] = useState(false); // New state for dialog control
 
-  const { data, isLoading, error } = useLoadUserQuery();
-  const [updateUser, { data: updateUserData, isLoading: updateUserIsLoading, error: updateUserError ,isSuccess}] =
+  const { data, isLoading, error, refetch } = useLoadUserQuery(); // Add refetch for reloading data
+  const [updateUser, { data: updateUserData, isLoading: updateUserIsLoading, error: updateUserError, isSuccess }] =
     useUpdateUserMutation();
 
   const onChangeHandler = (e) => {
@@ -28,30 +29,25 @@ function Profile() {
 
     const formData = new FormData();
     if (name) formData.append('name', name);
-    if (profileUri) formData.append('photoUri', profileUri);
+    if (profileUri) formData.append('photoUrl', profileUri);
 
     try {
-      await updateUser(formData).unwrap();
-      alert('Profile updated successfully!');
+      await updateUser(formData);
     } catch (err) {
       console.error('Error updating profile:', err);
-      alert('Failed to update profile. Please try again.');
     }
   };
 
-  useEffect(()=>{
-    if(isSuccess){
-      toast.success(data.message || "Profile updated successfully")
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(updateUserData?.message || "Profile updated successfully");
+      setDialogOpen(false); // Close dialog on success
+      refetch(); // Refresh user data
     }
-    if(updateUserError){
-      toast.error(updateUserError.data.message || "Failed to update profile")
-  }
-},[
-    updateUserData,
-    updateUserIsLoading,
-    updateUserError,
-
-  ])
+    if (updateUserError) {
+      toast.error(updateUserError.data?.message || "Failed to update profile");
+    }
+  }, [updateUserData, updateUserError, isSuccess, refetch]);
 
   const user = data?.user || {};
 
@@ -117,7 +113,7 @@ function Profile() {
               Role: <span className="font-normal uppercase text-gray-700 dark:text-gray-300">{user?.role || 'Unknown'}</span>
             </h1>
           </div>
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button>Edit Profile</Button>
             </DialogTrigger>
@@ -140,7 +136,7 @@ function Profile() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label>Profile Photo</Label>
-                <Input type="file" onChange={onChangeHandler} name='photoUrl' accept="image/*" className="col-span-3" />
+                <Input type="file" onChange={onChangeHandler} name="photoUrl" accept="image/*" className="col-span-3" />
               </div>
               {updateUserError && (
                 <p className="text-red-500">

@@ -6,7 +6,7 @@ import { deleteMedia, uploadMedia } from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
-    console.log(req.body)
+  
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -105,7 +105,7 @@ try {
 
 export const getUserProfile = async (req,res)=>{
   try {
-    console.log(req.user)
+   
     return res.status(200).json({
       success:true,
       message:"User profile retrieved successfully",

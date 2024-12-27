@@ -136,13 +136,13 @@ const MobileNavBar = () => {
   };
 
   return (
-    <Sheet className="">
+    <Sheet className="px-4">
       <SheetTrigger asChild>
         <Button size="icon" variant="outline" className="rounded-full bg-gray-200">
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col ">
+      <SheetContent  className="flex flex-col px-3">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
           <SheetTitle className="font-extrabold text-xl">E-Learning</SheetTitle>
           <DarkMode />
@@ -185,7 +185,7 @@ const MobileNavBar = () => {
         {user?.role === 'instructor' && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
+              <Button onClick={navigate('/admin')}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}

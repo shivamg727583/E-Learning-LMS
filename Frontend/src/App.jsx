@@ -7,6 +7,10 @@ import Login from './pages/login';
 import MyLearning from './pages/student/MyLearning';
 import Profile from './pages/student/Profile';
 import NotFound from './components/NotFound'; // Create this component for 404
+import Sidebar from './pages/admin/Sidebar';
+import Dashboard from './pages/admin/Dashboard';
+import CourseTable from './pages/admin/CourseTable';
+import CreateCourse from './pages/admin/CreateCourse';
 
 const appRouter = createBrowserRouter([
   {
@@ -38,6 +42,26 @@ const appRouter = createBrowserRouter([
         path: '*', // Wildcard route for undefined paths
         element: <NotFound />, // 404 component
       },
+
+      // Admin routes
+      {
+        path: 'admin',
+        element: <Sidebar />,
+        children: [
+          {
+            path: 'dashboard',
+            element: <Dashboard />,
+          },
+          {
+            path:'course',
+            element: <CourseTable />
+          },
+          {
+            path:'course/create',
+            element:<CreateCourse />
+          }
+        ]
+      }
     ],
   },
 ]);

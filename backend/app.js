@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import db from './database/db.js';
 import UserRoute from './routes/UserRouter.js';
+import courseRoute from './routes/courseRoute.js';
 
 const app = express();
 const Port = process.env.PORT || 8000;
@@ -27,7 +28,9 @@ app.get('/home',(_,res)=>{
     });
 });
 
+// APIs
 app.use('/api/v1/user',UserRoute);
+app.use('/api/v1/course',courseRoute);
 
 app.listen(Port,()=>{   
     console.log(`server is running on port ${Port}`);

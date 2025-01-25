@@ -14,10 +14,13 @@ import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
 import React from "react";
 import ReactPlayer from "react-player";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLoadUserQuery } from "@/features/api/authApi";
+
 
 const CourseDetail = () => {
   const params = useParams();
   const courseId = params.courseId;
+  const {data:loggedUser,isError:isUserError} = useLoadUserQuery();
   const navigate = useNavigate();
   const { data, isLoading, isError } =
     useGetCourseDetailWithStatusQuery(courseId);
@@ -25,8 +28,19 @@ const CourseDetail = () => {
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h>Failed to load course details</h>;
 
-  const { course, purchased } = data;
-  console.log(purchased);
+  let { course, purchased } = data;
+  
+  
+  if(course.enrolledStudents.includes(loggedUser?.user._id)){
+    purchased = true;
+    return <h1>Course already enrolled</h1>;
+    
+  }
+  else {
+    purchased = false;
+    // console.log(loggedUser?.user._id);
+    // console.log("Not Enrolled")
+  }
 
   const handleContinueCourse = () => {
     if(purchased){
@@ -41,7 +55,7 @@ const CourseDetail = () => {
           <h1 className="font-bold text-2xl md:text-3xl">
             {course?.courseTitle}
           </h1>
-          <p className="text-base md:text-lg">Course Sub-title</p>
+          <p className="text-base md:text-lg">{course?.subTitle}</p>
           <p>
             Created By{" "}
             <span className="text-[#C0C4FC] underline italic">
@@ -65,11 +79,11 @@ const CourseDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle>Course Content</CardTitle>
-              <CardDescription>4 lectures</CardDescription>
+              <CardDescription>{course.lectures.length} lecture</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {course.lectures.map((lecture, idx) => (
-                <div key={idx} className="flex items-center gap-3 text-sm">
+                <div key={idx} className="flex items-center hover:bg-gray-300 hover:cursor-pointer p-1 rounded-md gap-3 text-sm">
                   <span>
                     {true ? <PlayCircle size={14} /> : <Lock size={14} />}
                   </span>
@@ -90,9 +104,9 @@ const CourseDetail = () => {
                   controls={true}
                 />
               </div>
-              <h1>Lecture title</h1>
+              <h1>{course.lectures[0].lectureTitle}</h1>
               <Separator className="my-2" />
-              <h1 className="text-lg md:text-xl font-semibold">Course Price</h1>
+              <h1 className="text-lg md:text-xl font-semibold">₹ {course?.coursePrice}</h1>
             </CardContent>
             <CardFooter className="flex justify-center p-4">
               {purchased ? (

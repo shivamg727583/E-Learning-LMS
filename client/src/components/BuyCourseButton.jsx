@@ -8,14 +8,20 @@ const BuyCourseButton = ({ courseId }) => {
   const [createCheckoutSession, {data, isLoading, isSuccess, isError, error }] =
     useCreateCheckoutSessionMutation();
 
+    
+
   const purchaseCourseHandler = async () => {
     await createCheckoutSession(courseId);
+    console.log("Course ID: ", courseId);
+    console.log("Data: ", data);
   };
 
   useEffect(()=>{
     if(isSuccess){
+      console.log("Data: ", data);
        if(data?.url){
         window.location.href = data.url; // Redirect to stripe checkout url
+
        }else{
         toast.error("Invalid response from server.")
        }

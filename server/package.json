@@ -7,7 +7,7 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Shivam Gupta",
   "license": "ISC",
   "description": "",
   "dependencies": {

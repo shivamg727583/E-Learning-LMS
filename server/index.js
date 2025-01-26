@@ -24,9 +24,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Default middleware
-app.use(express.static(path.join(__dirname, "../client/build"))); // Ensure build folder is served
+app.use(express.static(path.join(__dirname, "../client/dist"))); // Ensure build folder is served
 app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/build", "index.html")); // Adjust the path for production build
+    res.sendFile(path.resolve(__dirname, "../client/dist", "index.html")); // Adjust the path for production build
 });
 
 app.use(express.json());

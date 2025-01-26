@@ -42,7 +42,7 @@ The **E-Learning Management System** is a full-stack web application developed u
 ## Installation & Setup
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/e-learning-platform.git
+   git clone https://github.com/shivamg727583/E-Learning-LMS.git
    cd e-learning-platform
    ```
 

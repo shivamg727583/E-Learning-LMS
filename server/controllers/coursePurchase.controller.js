@@ -60,6 +60,7 @@ export const createCheckoutSession = async (req, res) => {
     newPurchase.paymentId = session.id;
     await newPurchase.save();
 
+
     return res.status(200).json({
       success: true,
       url: session.url, // Return the Stripe checkout URL
@@ -75,6 +76,8 @@ export const stripeWebhook = async (req, res) => {
   try {
     const payloadString = JSON.stringify(req.body, null, 2);
     const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
+
+   
 
     const header = stripe.webhooks.generateTestHeaderString({
       payload: payloadString,
@@ -97,6 +100,7 @@ export const stripeWebhook = async (req, res) => {
       const purchase = await CoursePurchase.findOne({
         paymentId: session.id,
       }).populate({ path: "courseId" });
+
 
       if (!purchase) {
         return res.status(404).json({ message: "Purchase not found" });
@@ -137,6 +141,7 @@ export const stripeWebhook = async (req, res) => {
   }
   res.status(200).send();
 };
+
 export const getCourseDetailWithPurchaseStatus = async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -147,7 +152,6 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
       .populate({ path: "lectures" });
 
     const purchased = await CoursePurchase.findOne({ userId, courseId });
-    console.log(purchased);
 
     if (!course) {
       return res.status(404).json({ message: "course not found!" });

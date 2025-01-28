@@ -23,17 +23,17 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Default middleware
-app.use(express.static(path.join(__dirname, "../client/dist"))); // Ensure build folder is served
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/dist", "index.html")); // Adjust the path for production build
-});
+// // Default middleware
+// app.use(express.static(path.join(__dirname, "../client/dist"))); // Ensure build folder is served
+// app.get("*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "../client/dist", "index.html")); // Adjust the path for production build
+// });
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: process.env.FRONTEND_API_LINK, // Ensure this is set to your frontend URL
+    origin: process.env.FRONTEND_API_LINK || "http://localhost:5173", // Ensure this is set to your frontend URL
     credentials: true
 }));
 

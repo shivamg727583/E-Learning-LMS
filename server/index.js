@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: process.env.FRONTEND_API_LINK || "https://e-learning-lms-1.onrender.com/", // Ensure this is set to your frontend URL
+    origin: process.env.FRONTEND_API_LINK || "https://e-learning-lms-1.onrender.com", // Ensure this is set to your frontend URL
     credentials: true
 }));
 

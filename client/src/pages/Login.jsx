@@ -65,7 +65,8 @@ const Login = () => {
 
   useEffect(() => {
     if(registerIsSuccess && registerData){
-      toast.success(registerData.message || "Signup successful.")
+      toast.success(registerData.message || "Signup successful.");
+      setLoginInput({})
     }
     if(registerError){
       toast.error(registerError.data.message || "Signup Failed");
